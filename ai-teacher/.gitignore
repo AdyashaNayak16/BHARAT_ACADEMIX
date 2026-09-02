@@ -1,0 +1,5 @@
+.env
+sample_chapter.pdf
+sample_output.json
+__pycache__/
+*.pyc

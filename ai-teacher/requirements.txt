@@ -1,0 +1,6 @@
+pypdf
+python-docx
+sentence-transformers
+numpy
+groq
+python-dotenv
