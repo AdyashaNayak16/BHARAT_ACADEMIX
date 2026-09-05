@@ -1,0 +1,56 @@
+{
+  "student_name": "Aarav Sharma",
+  "level": "beginner",
+  "preferred_language": "Hinglish",
+  "total_xp": 1500,
+  "streak_days": 4,
+  "lessons_completed": 4,
+  "mastery_average": 61,
+  "completed_topics": [
+    {
+      "topic": "Recursion in Python",
+      "date": "2026-09-05",
+      "score": 20,
+      "grade": "Needs Practice",
+      "language": "Hinglish"
+    },
+    {
+      "topic": "Python Functions & Scope",
+      "date": "2026-09-03",
+      "score": 88,
+      "grade": "A",
+      "language": "Hinglish"
+    },
+    {
+      "topic": "Newton's Laws of Motion",
+      "date": "2026-09-04",
+      "score": 76,
+      "grade": "B",
+      "language": "English"
+    }
+  ],
+  "strong_skills": [
+    "Logical Flow",
+    "Function Definition",
+    "First Law of Motion",
+    "Foundational Recursion in Python"
+  ],
+  "weak_areas": [
+    "Recursion Base Cases",
+    "Friction Vector Calculations",
+    "Variable Scoping in Closures",
+    "At its heart, this mechanism provides a predictable and structured approach to problem solving, allowing us to manage complexity with precision and clarity."
+  ],
+  "recommended_topics": [
+    {
+      "title": "Advanced Recursion in Python Concepts",
+      "reason": "Build deeper problem-solving mastery",
+      "difficulty": "intermediate"
+    },
+    {
+      "title": "Practical Projects on Recursion in Python",
+      "reason": "Apply this directly into real code/work",
+      "difficulty": "beginner"
+    }
+  ]
+}

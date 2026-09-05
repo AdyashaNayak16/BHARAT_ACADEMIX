@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bharat AcademiX | भारत एकेडमिक्स - Intelligent AI Teacher</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand-logo">
+        <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div class="logo-text">
+          <span class="logo-primary">BHARAT</span>
+          <span class="logo-secondary">ACADEMIX</span>
+          <span class="logo-sub">भारत एकेडमिक्स</span>
+        </div>
+      </div>
+      <div class="brand-tagline">Adaptive AI Teacher & Classroom</div>
+    </div>
+
+    <div class="header-right">
+      <div class="student-chip" id="studentProfileChip" onclick="showProfileModal()">
+        <div class="avatar-circle"><i class="fa-solid fa-user-astronaut"></i></div>
+        <div class="student-info">
+          <span class="student-name" id="navStudentName">Aarav Sharma</span>
+          <span class="student-xp"><i class="fa-solid fa-bolt"></i> <span id="navStudentXp">1450</span> XP · <i class="fa-solid fa-fire"></i> <span id="navStudentStreak">4</span>d streak</span>
+        </div>
+      </div>
+
+      <button class="icon-btn" onclick="showSettingsModal()" title="API & Audio Settings">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main App Container -->
+  <main class="main-container">
+
+    <!-- VIEW 1: DASHBOARD & LESSON SETUP -->
+    <section id="viewDashboard" class="app-view active">
+      <div class="dashboard-grid">
+        
+        <!-- Left: Lesson Launch Card -->
+        <div class="launch-card">
+          <div class="card-header">
+            <div class="header-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Step 1: Design Your Lesson</div>
+            <h2>What would you like to master today?</h2>
+            <p>Upload any study material (PDF, DOCX, TXT) or type any topic directly.</p>
+          </div>
+
+          <form id="lessonSetupForm" onsubmit="handleStartLesson(event)">
+            
+            <!-- Input Tabs: Topic vs File -->
+            <div class="input-tabs">
+              <button type="button" class="tab-btn active" id="tabTopic" onclick="switchInputTab('topic')">
+                <i class="fa-solid fa-keyboard"></i> Enter Topic
+              </button>
+              <button type="button" class="tab-btn" id="tabFile" onclick="switchInputTab('file')">
+                <i class="fa-solid fa-file-pdf"></i> Upload Study Material (PDF)
+              </button>
+            </div>
+
+            <!-- Topic Input Section -->
+            <div id="topicInputSection" class="input-section active">
+              <div class="form-group">
+                <label for="topicInput"><i class="fa-solid fa-book-open"></i> Topic or Subject</label>
+                <div class="input-with-icon">
+                  <input type="text" id="topicInput" placeholder="e.g., Recursion & Call Stack in Python, Newton's Laws of Motion..." value="Recursion in Python" />
+                </div>
+              </div>
+
+              <!-- Quick Topic Chips -->
+              <div class="quick-topics">
+                <span class="chips-label">Quick Suggestions:</span>
+                <span class="chip" onclick="setTopic('Recursion in Python')">Recursion in Python</span>
+                <span class="chip" onclick="setTopic('Photosynthesis & Cellular Respiration')">Photosynthesis</span>
+                <span class="chip" onclick="setTopic('Newton\'s Laws of Motion')">Newton's Laws</span>
+                <span class="chip" onclick="setTopic('Binary Search Trees')">Binary Search Trees</span>
+                <span class="chip" onclick="setTopic('Indian Constitution - Fundamental Rights')">Constitution Rights</span>
+              </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div id="fileInputSection" class="input-section">
+              <div class="form-group">
+                <label><i class="fa-solid fa-cloud-arrow-up"></i> Upload Document (PDF, DOCX, TXT)</label>
+                <div class="dropzone" id="pdfDropzone" onclick="document.getElementById('fileUploadInput').click()">
+                  <i class="fa-solid fa-file-arrow-up drop-icon"></i>
+                  <div class="drop-text">
+                    <strong>Drag & drop file here</strong> or <span>browse from computer</span>
+                  </div>
+                  <div class="drop-hint">Supports NCERT, College notes, Research papers, Coding worksheets</div>
+                  <input type="file" id="fileUploadInput" accept=".pdf,.docx,.doc,.txt,.md" style="display:none;" onchange="handleFileSelected(this)" />
+                </div>
+                <div id="selectedFileInfo" class="selected-file" style="display: none;">
+                  <i class="fa-solid fa-file-lines"></i>
+                  <span id="selectedFileName">sample_chapter.pdf</span>
+                  <button type="button" class="remove-file-btn" onclick="clearSelectedFile()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Personalization Options Grid -->
+            <div class="options-grid">
+              
+              <!-- 1. Student Level -->
+              <div class="form-group">
+                <label><i class="fa-solid fa-layer-group"></i> Mastery Level</label>
+                <div class="segmented-control">
+                  <input type="radio" name="level" id="levelBeginner" value="beginner" checked />
+                  <label for="levelBeginner">
+                    <span class="dot green"></span> Beginner
+                  </label>
+
+                  <input type="radio" name="level" id="levelIntermediate" value="intermediate" />
+                  <label for="levelIntermediate">
+                    <span class="dot yellow"></span> Intermediate
+                  </label>
+
+                  <input type="radio" name="level" id="levelAdvanced" value="advanced" />
+                  <label for="levelAdvanced">
+                    <span class="dot red"></span> Advanced
+                  </label>
+                </div>
+              </div>
+
+              <!-- 2. Multilingual Output -->
+              <div class="form-group">
+                <label for="languageSelect"><i class="fa-solid fa-language"></i> Teaching Language</label>
+                <select id="languageSelect" class="custom-select">
+                  <option value="Hinglish" selected>Hinglish (हिंग्लिश - Hindi + English)</option>
+                  <option value="English">English (Indian Accent)</option>
+                  <option value="Hindi">हिन्दी (Pure Hindi)</option>
+                  <option value="Bengali">বাংলা (Bengali)</option>
+                  <option value="Tamil">தமிழ் (Tamil)</option>
+                  <option value="Telugu">తెలుగు (Telugu)</option>
+                  <option value="Marathi">मराठी (Marathi)</option>
+                  <option value="Gujarati">ગુજરાતી (Gujarati)</option>
+                  <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+                </select>
+              </div>
+
+              <!-- 3. Available Time -->
+              <div class="form-group">
+                <label><i class="fa-solid fa-clock"></i> Available Time</label>
+                <div class="time-pills">
+                  <input type="radio" name="time_available" id="time5" value="5 minutes" />
+                  <label for="time5">5 min (Sprint)</label>
+
+                  <input type="radio" name="time_available" id="time15" value="15 minutes" checked />
+                  <label for="time15">15 min (Focus)</label>
+
+                  <input type="radio" name="time_available" id="time30" value="30 minutes" />
+                  <label for="time30">30 min (Deep)</label>
+
+                  <input type="radio" name="time_available" id="time45" value="45 minutes" />
+                  <label for="time45">45 min (Master)</label>
+                </div>
+              </div>
+
+              <!-- 4. Learning Objective -->
+              <div class="form-group">
+                <label for="objectiveSelect"><i class="fa-solid fa-bullseye"></i> Learning Objective</label>
+                <select id="objectiveSelect" class="custom-select">
+                  <option value="Concept Mastery" selected>🎯 Concept Mastery & Intuition</option>
+                  <option value="Exam Prep">📝 Exam / Competitive Prep (JEE/NEET/CBSE)</option>
+                  <option value="Quick Revision">⚡ Quick Revision & Formula Recall</option>
+                  <option value="Doubt Clearing">💡 Foundational Intuition & Doubts</option>
+                </select>
+              </div>
+
+            </div>
+
+            <!-- Submit CTA -->
+            <button type="submit" id="startLessonBtn" class="btn-primary btn-large">
+              <span class="btn-text"><i class="fa-solid fa-rocket"></i> Launch AI Classroom</span>
+              <span class="btn-loader" style="display:none;"><i class="fa-solid fa-spinner fa-spin"></i> Preparing Lesson & Avatar Voice...</span>
+            </button>
+
+          </form>
+        </div>
+
+        <!-- Right: Student Profile & History Card -->
+        <div class="profile-summary-card">
+          <div class="card-header-sm">
+            <h3><i class="fa-solid fa-chart-line"></i> Your Learning Journey</h3>
+            <span class="badge-pill">Live Adaptive Profile</span>
+          </div>
+
+          <!-- Quick Stats Bar -->
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-num" id="dashLessonsCount">3</div>
+              <div class="stat-lbl">Lessons Done</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num" id="dashMasteryAvg">82%</div>
+              <div class="stat-lbl">Avg Mastery</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num" id="dashStreak">4 🔥</div>
+              <div class="stat-lbl">Day Streak</div>
+            </div>
+          </div>
+
+          <!-- Tracked Weak Concepts Section -->
+          <div class="tracked-section">
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> Identified Weak Areas for Revision</h4>
+            <div id="dashWeakAreasList" class="tags-list">
+              <span class="tag-pill warning">Recursion Base Cases</span>
+              <span class="tag-pill warning">Variable Scoping</span>
+            </div>
+          </div>
+
+          <!-- Recommended Next Topics -->
+          <div class="recommended-section">
+            <h4><i class="fa-solid fa-lightbulb"></i> Recommended for You Next</h4>
+            <div id="dashRecommendationsList" class="recommend-cards">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEW 2: INTERACTIVE TEACHING CLASSROOM -->
+    <section id="viewClassroom" class="app-view">
+      
+      <!-- Classroom Top Navigation -->
+      <div class="classroom-topbar">
+        <div class="lesson-meta">
+          <button class="back-btn" onclick="confirmExitClassroom()"><i class="fa-solid fa-arrow-left"></i></button>
+          <div class="lesson-titles">
+            <h2 id="classLessonTopic">Recursion in Python</h2>
+            <div class="meta-tags">
+              <span class="tag" id="classLevelTag">Beginner</span>
+              <span class="tag" id="classLangTag">Hinglish</span>
+              <span class="tag concept-badge" id="classConceptBadge">Concept 1 of 3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concept Progress Timeline -->
+        <div class="concept-stepper" id="conceptStepper">
+          <!-- Dynamically populated concept step nodes -->
+        </div>
+
+        <div class="topbar-actions">
+          <button class="btn-secondary btn-sm" onclick="openAskDoubtPanel()">
+            <i class="fa-solid fa-comment-dots"></i> Ask Doubt
+          </button>
+          <button class="btn-danger-outline btn-sm" onclick="finishLessonEarly()">
+            <i class="fa-solid fa-flag-checkered"></i> Finish Lesson
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Classroom Two-Column Stage -->
+      <div class="classroom-stage">
+        
+        <!-- Left: AI Teacher Video & Slide Presentation -->
+        <div class="stage-left">
+          
+          <!-- AI Teacher Studio Deck -->
+          <div class="avatar-and-slide-container">
+            
+            <!-- Dynamic Slide Canvas -->
+            <div class="slide-viewport">
+              <img id="currentSlideImg" src="/static/slides/slide_placeholder.png" alt="Lesson Slide Visual" onerror="this.src='https://placehold.co/1280x720/1e293b/38bdf8?text=Bharat+AcademiX+Slide'" />
+              
+              <!-- Floating AI Teacher Avatar Overlay -->
+              <div class="teacher-avatar-overlay">
+                <div class="avatar-wrapper" id="teacherAvatarWrapper">
+                  <!-- Stylized SVG AI Teacher Avatar -->
+                  <div class="avatar-circle-art" id="avatarFace">
+                    <div class="avatar-head">
+                      <div class="avatar-hair"></div>
+                      <div class="avatar-eyes">
+                        <div class="eye left"><div class="pupil"></div></div>
+                        <div class="eye right"><div class="pupil"></div></div>
+                      </div>
+                      <div class="avatar-glasses"></div>
+                      <div class="avatar-mouth" id="avatarMouth"></div>
+                    </div>
+                  </div>
+                  <!-- Speaking Waves Animation -->
+                  <div class="voice-wave" id="voiceWaveIndicator">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                  </div>
+                </div>
+                <div class="teacher-name-tag">
+                  <span class="online-indicator"></span> <strong>Guru AI</strong> (Teacher)
+                </div>
+              </div>
+
+              <!-- Slide Controls Overlay -->
+              <div class="slide-overlay-controls">
+                <button class="overlay-btn" onclick="toggleFullscreenSlide()" title="Fullscreen Slide"><i class="fa-solid fa-expand"></i></button>
+                <button class="overlay-btn" onclick="replayCurrentConceptAudio()" title="Replay Concept Explanation"><i class="fa-solid fa-rotate-left"></i></button>
+              </div>
+            </div>
+
+            <!-- Real-Time Subtitles & Transcript -->
+            <div class="subtitles-container">
+              <div class="subtitles-header">
+                <span><i class="fa-solid fa-closed-captioning"></i> Live Teacher Transcript</span>
+                <span class="speech-status" id="speechStatusIndicator"><i class="fa-solid fa-volume-high"></i> Speaking</span>
+              </div>
+              <div class="subtitles-body" id="subtitlesText">
+                Welcome to this lesson! Listening to concept explanation...
+              </div>
+            </div>
+
+            <!-- Teacher Audio Player Controller -->
+            <div class="audio-control-bar">
+              <button class="play-btn" id="mainPlayPauseBtn" onclick="toggleAudioPlayback()">
+                <i class="fa-solid fa-pause" id="playPauseIcon"></i>
+              </button>
+
+              <div class="audio-progress-container" onclick="seekAudio(event)">
+                <div class="audio-progress-bar" id="audioProgressBar"></div>
+              </div>
+
+              <div class="audio-time" id="audioTimeDisplay">0:00 / 0:00</div>
+
+              <div class="speed-selector">
+                <button class="speed-btn" onclick="cyclePlaybackSpeed()" id="speedBtn">1.0x</button>
+              </div>
+
+              <audio id="lessonAudioElement" preload="auto"></audio>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Right: Socratic Adaptive Learning & Question Loop -->
+        <div class="stage-right">
+          
+          <!-- Current Concept Card -->
+          <div class="concept-detail-card">
+            <div class="concept-card-top">
+              <span class="concept-counter-chip" id="cardConceptCounter">CONCEPT 1</span>
+              <h3 id="cardConceptTitle">Loading concept...</h3>
+            </div>
+            <div class="concept-key-points" id="cardKeyPoints">
+              <!-- Key takeaways loaded here -->
+            </div>
+          </div>
+
+          <!-- Socratic Check & Adaptive Loop Widget -->
+          <div class="adaptive-loop-card" id="adaptiveLoopCard">
+            
+            <div class="loop-header">
+              <div class="loop-title">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>Teacher's Check Question</span>
+              </div>
+              <span class="badge-socratic">Adaptive Evaluation</span>
+            </div>
+
+            <!-- Question Box -->
+            <div class="question-box">
+              <p id="socraticQuestionText">Preparing question for this concept...</p>
+            </div>
+
+            <!-- Student Answer Form -->
+            <div id="studentAnswerSection" class="answer-section">
+              <label for="studentAnswerInput">Your Answer in your own words:</label>
+              
+              <div class="answer-input-container">
+                <textarea id="studentAnswerInput" rows="3" placeholder="Type your understanding here... or click the microphone to speak!"></textarea>
+                
+                <div class="answer-tools">
+                  <button type="button" class="mic-btn" id="voiceInputBtn" onclick="toggleVoiceSpeechRecognition()" title="Speak answer (Speech-to-Text)">
+                    <i class="fa-solid fa-microphone"></i> <span id="micBtnText">Voice</span>
+                  </button>
+                  <button type="button" class="btn-primary" id="submitAnswerBtn" onclick="submitStudentAnswer()">
+                    <span>Submit Answer</span> <i class="fa-solid fa-paper-plane"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deep AI Evaluation & Misconception Diagnosis Result (Dynamic) -->
+            <div id="evaluationResultCard" class="eval-result-card" style="display: none;">
+              
+              <!-- Status Badge -->
+              <div class="eval-verdict-banner" id="evalVerdictBanner">
+                <div class="verdict-icon" id="verdictIcon"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="verdict-info">
+                  <h4 id="verdictTitle">Excellent! Concept Mastered</h4>
+                  <p id="verdictScore">Score: 100%</p>
+                </div>
+              </div>
+
+              <!-- Feedback Note -->
+              <div class="eval-feedback-box">
+                <div class="feedback-label"><i class="fa-solid fa-comment-dots"></i> Teacher's Feedback:</div>
+                <p id="evalFeedbackText">Your explanation accurately identified the core principle!</p>
+              </div>
+
+              <!-- Misconception Breakdown (if partial/incorrect) -->
+              <div id="misconceptionBox" class="misconception-box" style="display: none;">
+                <div class="misconception-header">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  <strong>Misconception Detected: <span id="misconceptionName">Boundary Confusion</span></strong>
+                </div>
+                <p id="misconceptionDesc">The explanation overlooked how state unwinds after base condition.</p>
+              </div>
+
+              <!-- Teacher Re-explanation with New Analogy (if partial/incorrect) -->
+              <div id="reexplanationBox" class="reexplanation-box" style="display: none;">
+                <div class="reexp-header">
+                  <i class="fa-solid fa-lightbulb"></i>
+                  <strong>Teacher's New Intuitive Analogy:</strong>
+                </div>
+                <p id="reexplanationText">Let's look at this differently...</p>
+                <button class="listen-btn" onclick="playEvaluationAudio()"><i class="fa-solid fa-volume-high"></i> Listen to Teacher</button>
+              </div>
+
+              <!-- Follow-Up Check Question (if retry needed) -->
+              <div id="followupBox" class="followup-box" style="display: none;">
+                <div class="followup-header">
+                  <i class="fa-solid fa-arrow-rotate-right"></i>
+                  <strong>Quick Retry Question:</strong>
+                </div>
+                <p id="followupQuestionText">Now try this simpler check:</p>
+                <div class="retry-input-row">
+                  <input type="text" id="retryAnswerInput" placeholder="Your retry answer..." />
+                  <button class="btn-secondary btn-sm" onclick="submitRetryAnswer()">Check</button>
+                </div>
+              </div>
+
+              <!-- Next Action Button -->
+              <div class="eval-actions">
+                <button id="nextConceptBtn" class="btn-success btn-large" onclick="advanceToNextConceptOrQuiz()">
+                  <span>Next Concept</span> <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Contextual "Ask your Teacher" Floating Drawer -->
+      <div id="askDoubtDrawer" class="doubt-drawer">
+        <div class="drawer-header">
+          <div class="drawer-title">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <div>
+              <h4>Ask Guru AI</h4>
+              <span>Instant Contextual Doubt Solving</span>
+            </div>
+          </div>
+          <button class="close-drawer-btn" onclick="closeAskDoubtPanel()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="drawer-chat-body" id="doubtChatHistory">
+          <div class="chat-msg teacher-msg">
+            <div class="msg-avatar"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="msg-bubble">
+              Hello! Have any questions or confusion about this concept? Ask me anything, and I'll explain it simply.
+            </div>
+          </div>
+        </div>
+
+        <div class="drawer-input-footer">
+          <div class="doubt-input-row">
+            <input type="text" id="doubtTextInput" placeholder="Ask your question here..." onkeypress="if(event.key==='Enter') submitDoubtQuestion()" />
+            <button class="send-doubt-btn" onclick="submitDoubtQuestion()"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- VIEW 3: FINAL ASSESSMENT & DIAGNOSTIC REPORT -->
+    <section id="viewAssessment" class="app-view">
+      
+      <!-- Quiz Stage -->
+      <div id="quizContainer" class="quiz-container">
+        <div class="quiz-card">
+          <div class="card-header">
+            <div class="header-badge"><i class="fa-solid fa-clipboard-check"></i> Final Knowledge Assessment</div>
+            <h2>Knowledge Mastery Check</h2>
+            <p>Let's verify your full grasp across all concepts taught in this lesson.</p>
+          </div>
+
+          <div id="quizQuestionsList" class="quiz-questions-list">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <button id="submitQuizBtn" class="btn-primary btn-large" onclick="submitFinalQuiz()">
+            <span>Submit Quiz & Generate Learning Report</span> <i class="fa-solid fa-square-poll-vertical"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Comprehensive Learning Report Stage -->
+      <div id="reportContainer" class="report-container" style="display: none;">
+        
+        <div class="report-card">
+          
+          <!-- Report Top Header -->
+          <div class="report-header">
+            <div class="report-brand">
+              <i class="fa-solid fa-award award-icon"></i>
+              <div>
+                <h2>Comprehensive Learning Report</h2>
+                <p id="reportTopicMeta">Topic: Recursion in Python · Beginner · Hinglish</p>
+              </div>
+            </div>
+            <div class="report-actions">
+              <button class="btn-secondary btn-sm" onclick="window.print()"><i class="fa-solid fa-print"></i> Print / Save PDF</button>
+              <button class="btn-primary btn-sm" onclick="returnToDashboard()"><i class="fa-solid fa-house"></i> Dashboard</button>
+            </div>
+          </div>
+
+          <!-- Overall Score & Teacher Summary Banner -->
+          <div class="score-banner">
+            <div class="score-dial">
+              <div class="dial-circle">
+                <span class="score-value" id="reportScoreValue">88%</span>
+                <span class="score-lbl">Mastery</span>
+              </div>
+              <div class="grade-badge" id="reportGradeBadge">Grade A</div>
+            </div>
+
+            <div class="teacher-evaluation-summary">
+              <h3><i class="fa-solid fa-user-check"></i> AI Teacher Diagnostic Summary</h3>
+              <p id="reportTeacherSummary">
+                Great job completing the lesson! You demonstrated solid intuition and accuracy across core mechanisms.
+              </p>
+            </div>
+          </div>
+
+          <!-- Diagnostic Grid: Strong vs Weak vs Misconceptions -->
+          <div class="report-grid">
+            
+            <!-- Strong Concepts -->
+            <div class="report-col">
+              <div class="col-header success">
+                <i class="fa-solid fa-circle-check"></i>
+                <h4>Strong Concepts</h4>
+              </div>
+              <div id="reportStrongList" class="concept-breakdown-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Weak Concepts -->
+            <div class="report-col">
+              <div class="col-header warning">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <h4>Concepts Needing Revision</h4>
+              </div>
+              <div id="reportWeakList" class="concept-breakdown-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Detected Misconceptions Log -->
+            <div class="report-col">
+              <div class="col-header info">
+                <i class="fa-solid fa-brain"></i>
+                <h4>Misconception Diagnosis Log</h4>
+              </div>
+              <div id="reportMisconceptionsList" class="misconception-log-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Actionable Revision Roadmap -->
+          <div class="revision-roadmap-section">
+            <h3><i class="fa-solid fa-route"></i> Your Personalized Revision Roadmap</h3>
+            <div id="reportRevisionSteps" class="roadmap-steps">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Next Recommended Topics (One-Click Launch) -->
+          <div class="next-topics-section">
+            <h3><i class="fa-solid fa-compass"></i> Recommended Next Topics</h3>
+            <p>Based on your performance in this lesson, here are the optimal next milestones:</p>
+            <div id="reportNextTopicsList" class="next-topic-cards">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="modal-backdrop" onclick="hideModals(event)">
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-id-card"></i> Student Profile & Mastery Track</h3>
+        <button class="modal-close-btn" onclick="hideProfileModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="profileModalBody">
+        <!-- Dynamically loaded from /api/profile -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal-backdrop" onclick="hideModals(event)">
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-sliders"></i> Engine & API Settings</h3>
+        <button class="modal-close-btn" onclick="hideSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="saveApiKey(event)">
+          <div class="form-group">
+            <label for="groqApiKeyInput"><i class="fa-solid fa-key"></i> Groq API Key (Optional / Real-time LLM)</label>
+            <input type="password" id="groqApiKeyInput" placeholder="gsk_..." />
+            <small>If not entered, Bharat AcademiX runs on its intelligent built-in pedagogical teacher engine.</small>
+          </div>
+          <button type="submit" class="btn-primary">Save Key</button>
+          <span id="apiKeySaveStatus" class="save-status-msg"></span>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
