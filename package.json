@@ -1,0 +1,23 @@
+{
+  "name": "bharat-academix",
+  "version": "2.0.0",
+  "description": "Bharat AcademiX - 24/7 Multilingual Adaptive AI Teacher & Classroom",
+  "main": "app.py",
+  "scripts": {
+    "start": "python app.py",
+    "dev": "python app.py",
+    "serve": "python app.py",
+    "test": "python -c \"import urllib.request; print(urllib.request.urlopen('http://localhost:5000/api/health').read().decode())\""
+  },
+  "keywords": [
+    "ai-teacher",
+    "edtech",
+    "adaptive-learning",
+    "socratic-teaching",
+    "bharat-academix",
+    "rag",
+    "multilingual-tts"
+  ],
+  "author": "Bharat AcademiX Team",
+  "license": "MIT"
+}
